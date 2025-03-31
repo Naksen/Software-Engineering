@@ -34,7 +34,10 @@ async def read_users_me(
     return current_user
 
 @router.post("/users/", response_model=User)
-async def create_user(user: UserCreate):
+async def create_user(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    user: UserCreate,
+):
     if user.username in fake_users_db:
         raise HTTPException(status_code=400, detail="Username already exists")
     
