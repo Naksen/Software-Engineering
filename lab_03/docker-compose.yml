@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  user_service:
+    build:
+      context: ./user_service
+    container_name: user_service
+    depends_on:
+      - database
+    ports:
+      - "8000:8000"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  email_service:
+    build:
+      context: ./email_service
+    container_name: email_service
+    depends_on:
+      - user_service
+    ports:
+      - "8001:8001"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+
+  database:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: main_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
