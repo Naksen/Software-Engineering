@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS email_folders (
     username VARCHAR NOT NULL
 );
 
+CREATE INDEX idx_email_folders_username ON email_folders (username);
+
 CREATE TABLE IF NOT EXISTS emails (
     id SERIAL PRIMARY KEY,
     subject VARCHAR NOT NULL,
